@@ -22,18 +22,13 @@ export const applyMiddleware = <TState>(
     return (reducer: TReducer<TState>, preloadedState?: TState) => {
       const store = createStore(reducer, preloadedState);
       const middlewareAPI = {
-              getState: store.getState,
-              dispatch: (action: TDispatchAction) => dispatch(action),
-            };
+        getState: store.getState,
+        dispatch: (action: TDispatchAction) => dispatch(action),
+      };
 
-            const chain = middlewares.map((mw) =>
-              mw(middlewareAPI)
-            );
+      const chain = middlewares.map((mw) => mw(middlewareAPI));
 
-            dispatch = chain.reduceRight(
-              (next, mw) => mw(next),
-              store.dispatch
-            );
+      dispatch = chain.reduceRight((next, mw) => mw(next), store.dispatch);
     };
   };
 };
@@ -55,7 +50,8 @@ export const createStore = <TState = TDefaultState>(
   };
 
   const dispatch = (action: TDispatchAction) => {
-    if (isDispatching) return throw new Error('cannot dispatch while 1 operation is incomplete');
+    if (isDispatching)
+      throw new Error("cannot dispatch while 1 operation is incomplete");
     try {
       isDispatching = true;
       if (action) {
